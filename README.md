@@ -212,7 +212,7 @@ For example, updating two objects could be done:
 
     POST /Product/
     Content-Type: message/json 
-    Accept: message/javascript
+    Accept: message/json
     
     [
       {to:"2", method:"put", body:{name:"updated 2"}, id: 1},
@@ -250,7 +250,7 @@ For example, to subscribe to all events that take place on /User/john:
     POST /User/
     Content-Type: message/json
     Client-Id: 251ab4ac9312f
-    Accept: message/javascript
+    Accept: message/json
     
     [
       {to:"john", method:"subscribe"}
@@ -293,6 +293,10 @@ adds a getSession(createIfNecessary, expires) method to the request object. Ther
 also a statically accessible exported function for accessing sessions:
 
     require("pintura/jsgi/session").getCurrentSession(createIfNecessary, expires)
+
+The session object is a persistent object and therefore the save() method that must 
+be called if any changes are made to the session object (that need to be persisted to 
+future requests).
      
 Cross-Site Request Forgery Protection
 ==========================
@@ -308,6 +312,25 @@ a "pintura-session" query parameter.
 If a request is not provably same-origin, the request object will include a "crossSiteForgeable"
 property value of true to indicate that it should be regarded with suspicion.
  
+JSON-RPC
+========
+Pintura supports JSON-RPC to call methods on objects. One can call a method on a
+persisted object by using the URL for the object, and JSON-RPC encoded request entity
+that describes the method invocation to make. For example:
+
+    POST /Product/33
+    Content-Type: application/json
+    Accept: application/json
+    
+    {
+      method:"addNote",
+      params:["cool product"],
+      id:"call1"
+    }
+
+Pintura will then lookup the object with the id of "/Product/33" and call object.addNote("cool product").
+The return value or thrown error from the call will be returned in a JSON-RPC response. 
+
 ### Homepage:
 
 * [http://persvr.org/](http://persvr.org/)

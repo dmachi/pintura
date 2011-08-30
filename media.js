@@ -7,7 +7,7 @@
 var model = require("perstore/model"),
 	when = require("promised-io/promise").when,
 	Media = exports.Media = function(media){
-		Media.instances[media.mediaType] = media;
+		return Media.instances[media.mediaType] = media;
 	};
 
 Media.instances = {};
@@ -103,7 +103,9 @@ exports.getColumnsToExport = function(request, item){
 	return columns;
 }
 
+// TODO move to promised-io/lazy-array
 exports.forEachableToString = function(input){
+	if (typeof input === "string") return input;
 	var strings = [];
 	return when(input.forEach(function(block){
 		strings.push(block);

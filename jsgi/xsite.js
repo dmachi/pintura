@@ -2,7 +2,7 @@
  * Combines JsonP, WindowName, and CrossSiteXhr for full support for all common
  * of cross-site web app access to resources
  */ 
-var parseQuery = require("jack/querystring").parseQuery,
+var parseQuery = require("./querystring").parseQuery,
 	when = require("promised-io/promise").when;
 	
 exports.CrossSite = function(nextApp){
@@ -80,11 +80,11 @@ function CrossSiteXhr(nextApp){
 				} 
 				headers["access-control-allow-origin"] = "*";
 				if(request.method === "OPTIONS"){
-					if(request["access-control-request-methods"]){
-						headers["access-control-allow-methods"] = "*";
+					if(request.headers["access-control-request-method"]){
+						headers["access-control-allow-methods"] = request.headers["access-control-request-method"];
 					}
-					if(request["access-control-request-headers"]){
-						headers["access-control-allow-headers"] = "*";
+					if(request.headers["access-control-request-headers"]){
+						headers["access-control-allow-headers"] = request.headers["access-control-request-headers"];
 					}
 					headers["access-control-allow-credentials"] = true;
 				}
